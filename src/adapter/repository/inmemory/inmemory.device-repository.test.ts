@@ -1,4 +1,4 @@
-import { Computer, FrequentComputer, MedicalDevice } from "@/core/domain";
+import { Computer, DeviceCriteria, FrequentComputer, MedicalDevice } from "@/core/domain";
 import { DeviceRepository } from "@/core/repository";
 import { InMemoryDeviceRepository } from ".";
 
@@ -157,4 +157,79 @@ describe("DeviceRepository contract tests", () => {
     const found = computers.find(c => c.id === "comp-6");
     expect(found?.checkoutAt).toBeInstanceOf(Date);
   });
+
+  describe("DeviceCriteria behavior", () => {
+    beforeEach(async () => {
+      const now = Date.now();
+      const brands = ["Dell", "HP", "Apple", "Lenovo", "Acer"];
+      const owners = ["owner-1", "owner-2", "owner-3", "owner-4", "owner-5"];
+
+      for (let i = 0; i < 5; i++) {
+        const computer: Computer = {
+          id: `crit-comp-${i}`,
+          brand: brands[i],
+          model: `Model-${i}`,
+          owner: { name: `Owner-${i}`, id: owners[i] },
+          photoURL: new URL(`http://example.com/photo${i}.png`),
+          updatedAt: new Date(now + i * 1000),
+          checkinAt: new Date(),
+        };
+        await repo.checkinComputer(computer);
+      }
+    });
+
+    it("should filter by brand", async () => {
+      const criteria: DeviceCriteria = {
+        filterBy: { field: "brand", value: "Dell" },
+      };
+      const results = await repo.getComputers(criteria);
+      expect(results.length).toBeGreaterThan(0);
+      expect(results.every(r => r.brand === "Dell")).toBe(true);
+    });
+
+    it("should filter by owner id", async () => {
+      const criteria: DeviceCriteria = {
+        filterBy: { field: "owner.id", value: "owner-3" },
+      };
+      const results = await repo.getComputers(criteria);
+      expect(results.every(r => r.owner.id === "owner-3")).toBe(true);
+    });
+
+    it("should sort ascending by updatedAt", async () => {
+      const criteria: DeviceCriteria = {
+        sortBy: { field: "updatedAt", isAscending: true },
+      };
+      const results = await repo.getComputers(criteria);
+      const timestamps = results.map(r => r.updatedAt.getTime());
+      expect(timestamps).toEqual([...timestamps].sort((a, b) => a - b));
+    });
+
+    it("should sort descending by updatedAt", async () => {
+      const criteria: DeviceCriteria = {
+        sortBy: { field: "updatedAt", isAscending: false },
+      };
+      const results = await repo.getComputers(criteria);
+      const timestamps = results.map(r => r.updatedAt.getTime());
+      expect(timestamps).toEqual([...timestamps].sort((a, b) => b - a));
+    });
+
+    it("should apply pagination using limit and offset", async () => {
+      const criteria: DeviceCriteria = { limit: 2, offset: 2 };
+      const results = await repo.getComputers(criteria);
+      expect(results.length).toBeLessThanOrEqual(2);
+    });
+
+    it("should combine filter, sort, and pagination", async () => {
+      const criteria: DeviceCriteria = {
+        filterBy: { field: "brand", value: "HP" },
+        sortBy: { field: "updatedAt", isAscending: true },
+        limit: 1,
+        offset: 0,
+      };
+      const results = await repo.getComputers(criteria);
+      expect(results.length).toBe(1);
+      expect(results[0].brand).toBe("HP");
+    });
+  });
 });
+
