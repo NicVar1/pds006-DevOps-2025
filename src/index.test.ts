@@ -5,30 +5,6 @@ import { ComputerService, DeviceService, MedicalDeviceService } from "./core/ser
 import { ElysiaApiAdapter } from "./adapter/api/elysia";
 import Elysia from "elysia";
 
-function setupElysiaApp() {
-  const deviceRepository = new InMemoryDeviceRepository()
-  const photoRepository = new FileSystemPhotoRepository()
-
-  const computerService = new ComputerService(
-      deviceRepository, 
-      photoRepository, 
-      new URL("http://localhost:3000/api")
-  )
-
-  const deviceService = new DeviceService(deviceRepository)
-
-  const medicalDeviceService = new MedicalDeviceService(
-      deviceRepository,
-      photoRepository
-  )
-
-  return new ElysiaApiAdapter(
-      computerService,
-      deviceService,
-      medicalDeviceService
-  ).app
-}
-
 async function createTestImageFile(): Promise<File> {
   const pngBytes = new Uint8Array([
     0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, // PNG header
