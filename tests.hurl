@@ -12,30 +12,12 @@
 # 1) Registrar un computador frecuente (multipart/form-data)
 ################################################################
 POST http://localhost:3000/api/computers/frequent
-Content-Type: multipart/form-data; boundary=HURLBOUNDARY
-
---HURLBOUNDARY
-Content-Disposition: form-data; name="brand"
-
-Sony
---HURLBOUNDARY
-Content-Disposition: form-data; name="model"
-
-VAIO
---HURLBOUNDARY
-Content-Disposition: form-data; name="ownerName"
-
-Harry
---HURLBOUNDARY
-Content-Disposition: form-data; name="ownerId"
-
-123456
---HURLBOUNDARY
-Content-Disposition: form-data; name="photo"; filename="test.jpg"
-Content-Type: image/jpeg
-
-< ./tests/test_images/test.jpg
---HURLBOUNDARY--
+[Multipart]
+brand: Sony
+model: VAIO
+ownerName: Harry
+ownerId: 123456
+photo: file,tests/test_images/test.jpg; image/jpeg
 
 HTTP/1.1 200
 [Asserts]
@@ -57,34 +39,13 @@ jsonpath "$" count > 0
 # 3) Registrar equipo médico (multipart/form-data)
 ################################################################
 POST http://localhost:3000/api/medicaldevices/checkin
-Content-Type: multipart/form-data; boundary=HURLBOUNDARY
-
---HURLBOUNDARY
-Content-Disposition: form-data; name="brand"
-
-GE
---HURLBOUNDARY
-Content-Disposition: form-data; name="model"
-
-ECG1000
---HURLBOUNDARY
-Content-Disposition: form-data; name="ownerName"
-
-Dr. House
---HURLBOUNDARY
-Content-Disposition: form-data; name="ownerId"
-
-123512464
---HURLBOUNDARY
-Content-Disposition: form-data; name="serial"
-
-f48238r7y2r
---HURLBOUNDARY
-Content-Disposition: form-data; name="photo"; filename="test.jpg"
-Content-Type: image/jpeg
-
-< ./tests/test_images/test.jpg
---HURLBOUNDARY--
+[Multipart]
+brand: GE
+model: ECG1000
+ownerName: Dr. House
+ownerId: 123512464
+serial: f48238r7y2r
+photo: file,tests/test_images/test.jpg; image/jpeg
 
 HTTP/1.1 200
 [Asserts]
