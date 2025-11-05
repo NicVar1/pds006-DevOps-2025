@@ -5,6 +5,7 @@
 POST http://localhost:3000/api/computers/frequent
 Content-Type: multipart/form-data; boundary=WebKitFormBoundary123
 
+# 👇 salto de línea vacío necesario
 --WebKitFormBoundary123
 Content-Disposition: form-data; name="brand"
 
