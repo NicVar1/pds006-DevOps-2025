@@ -15,38 +15,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️Descargar el código del repositorio
+      # 1️ Descarga del código fuente
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️Instalar Docker
-      - name: Setup docker
+      # 2️ Configurar Docker
+      - name: Setup Docker
         uses: docker/setup-buildx-action@v3
 
-      # 3️Construir imagen del contenedor
-      - name: Build docker image
+      # 3️ Construir imagen del contenedor
+      - name: Build Docker image
         run: |
+          echo "🔧 Building Docker image..."
           docker build -t vise-api:latest .
 
-      # 4️Levantar contenedor (esperar un poco a que arranque)
+      # 4️ Ejecutar contenedor y esperar a que arranque
       - name: Run container
         run: |
+          echo "🚀 Starting container..."
           docker run -d -p ${{ github.event.inputs.PORT }}:${{ github.event.inputs.PORT }} --name vise-api vise-api:latest
+          echo "⏳ Waiting for container to initialize..."
           sleep 8
+          docker ps
 
-      # Instalar Hurl (herramienta para pruebas HTTP)
-      - name: Setup hurl (API testing tool)
+      # 5️ Instalar Hurl (herramienta de pruebas HTTP)
+      - name: Setup Hurl (API testing tool)
         uses: gacts/install-hurl@v1
 
-      # 6️ Ejecutar las pruebas Hurl (ajustado para raíz)
+      # 6️ Ejecutar las pruebas Hurl
       - name: Run Hurl tests
         run: |
-          echo "Running API tests..."
-          hurl tests.hurl --variable PORT=${{ github.event.inputs.PORT }}
+          echo "🧪 Running API tests..."
+          set -e  # Detiene el job si alguna prueba falla
+          hurl --test --variable PORT=${{ github.event.inputs.PORT }} tests.hurl || (echo "❌ Some tests failed!" && exit 1)
+          echo "✅ All tests passed successfully!"
 
       # 7️ Detener y limpiar el contenedor (siempre se ejecuta)
       - name: Stop container
         if: always()
         run: |
-          docker stop vise-api
-          docker rm vise-api
+          echo "🧹 Cleaning up..."
+          docker stop vise-api || true
+          docker rm vise-api || true
