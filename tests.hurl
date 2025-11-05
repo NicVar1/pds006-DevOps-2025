@@ -6,6 +6,7 @@ POST http://localhost:3000/api/computers/frequent
 Content-Type: multipart/form-data; boundary=WebKitFormBoundary123
 
 # 👇 salto de línea vacío necesario
+
 --WebKitFormBoundary123
 Content-Disposition: form-data; name="brand"
 
@@ -36,6 +37,7 @@ jsonpath "$.device.id" exists
 
 # --- 2. Listar computadores frecuentes ---
 GET http://localhost:3000/api/computers/frequent
+
 HTTP/1.1 200
 [Asserts]
 jsonpath "$" count > 0
@@ -44,6 +46,8 @@ jsonpath "$" count > 0
 # --- 3. Registrar equipo médico ---
 POST http://localhost:3000/api/medicaldevices/checkin
 Content-Type: multipart/form-data; boundary=WebKitFormBoundary123
+
+# 👇 salto de línea vacío necesario
 
 --WebKitFormBoundary123
 Content-Disposition: form-data; name="brand"
@@ -79,6 +83,7 @@ jsonpath "$.id" exists
 
 # --- 4. Listar equipos médicos ---
 GET http://localhost:3000/api/medicaldevices
+
 HTTP/1.1 200
 [Asserts]
 jsonpath "$" count > 0
@@ -86,6 +91,7 @@ jsonpath "$" count > 0
 
 # --- 5. Listar todos los dispositivos registrados ---
 GET http://localhost:3000/api/devices/entered
+
 HTTP/1.1 200
 [Asserts]
 jsonpath "$" count > 0
