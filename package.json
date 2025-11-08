@@ -7,7 +7,10 @@
     "start": "bun run src/index.ts"
   },
   "dependencies": {
+    "@azure/monitor-opentelemetry-exporter": "^1.0.0-beta.32",
     "@elysiajs/openapi": "^1.4.10",
+    "@opentelemetry/auto-instrumentations-node": "^0.67.0",
+    "@opentelemetry/sdk-node": "^0.208.0",
     "applicationinsights": "^3.12.0",
     "better-auth": "^1.3.13",
     "drizzle-orm": "^0.44.5",
