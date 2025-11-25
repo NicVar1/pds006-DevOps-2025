@@ -233,6 +233,7 @@ Todos soportan:
 
 ```
 ![Diagrama UML](https://i.ibb.co/mCwQwKx3/Untitled-diagram-2025-11-25-200745.png)
+
 ```
 
 ---
