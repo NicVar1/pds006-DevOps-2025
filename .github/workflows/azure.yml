@@ -22,8 +22,8 @@ on:
 
 env:
   # Datos del container registry
-  ACR_LOGIN_SERVER: ${{ secrets.ACR_NAME_NICOLAS }}.azurecr.io
-  IMAGE_FULL: ${{ secrets.ACR_NAME_NICOLAS }}.azurecr.io/${{ github.event.inputs.IMAGE_REPOSITORY }}:${{ github.event.inputs.IMAGE_TAG }}
+  ACR_LOGIN_SERVER: ${{ secrets.ACR_NAME_ANDRES }}.azurecr.io
+  IMAGE_FULL: ${{ secrets.ACR_NAME_ANDRES }}.azurecr.io/${{ github.event.inputs.IMAGE_REPOSITORY }}:${{ github.event.inputs.IMAGE_TAG }}
 
 jobs:
   build-and-push:
@@ -37,8 +37,8 @@ jobs:
         uses: azure/docker-login@v1
         with:
           login-server: ${{ env.ACR_LOGIN_SERVER }}
-          username: ${{ secrets.ACR_NAME_NICOLAS }}
-          password: ${{ secrets.ACR_PASSWORD_NICOLAS }}
+          username: ${{ secrets.ACR_NAME_ANDRES }}
+          password: ${{ secrets.ACR_PASSWORD_ANDRES }}
 
       - name: Build and push image
         uses: docker/build-push-action@v6
@@ -57,5 +57,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ github.event.inputs.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_NICOLAS }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_ANDRES }}
           images: ${{ env.IMAGE_FULL }}
