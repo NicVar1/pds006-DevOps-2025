@@ -232,7 +232,7 @@ Todos soportan:
 # 🧭 Diagrama UML (Vista General)
 
 ```
-![Diagrama UML](https://github.com/NicVar1/pds006-DevOps-2025/issues/3#issue-3664486471)
+https://github.com/NicVar1/pds006-DevOps-2025/issues/3#issue-3664486471
 
 ```
 
