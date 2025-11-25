@@ -232,7 +232,7 @@ Todos soportan:
 # 🧭 Diagrama UML (Vista General)
 
 ```
-![Diagrama UML](https://ibb.co/d0qnqvhR)
+![Diagrama UML](https://i.ibb.co/mCwQwKx3/Untitled-diagram-2025-11-25-200745.png)
 ```
 
 ---
