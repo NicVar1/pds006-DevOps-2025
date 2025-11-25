@@ -232,23 +232,7 @@ Todos soportan:
 # 🧭 Diagrama UML (Vista General)
 
 ```
-        +---------------------+
-        |     API (Elysia)    |
-        +---------+-----------+
-                  |
-                  v
-        +---------------------+
-        |     Servicios       |
-        |   (Core Service)    |
-        +---------------------+
-                  |
-     +------------+-------------+
-     |                          |
-     v                          v
-+-----------+         +-------------------+
-|Repositorio|         |Repositorio Fotos  |
-|  InMemory |         | FileSystem        |
-+-----------+         +-------------------+
+![Diagrama UML](https://ibb.co/d0qnqvhR)
 ```
 
 ---
