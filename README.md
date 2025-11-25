@@ -1,5 +1,7 @@
 - RAMA DE NICOLAS
 
+- Rama Andrés Gómez
+
 # Practicas/Metricas aplicadas a lo largo del proyecto
 
 - Arquitectura hexagonal

@@ -17,9 +17,44 @@ export class InMemoryDeviceRepository implements DeviceRepository {
     return Array.from(this.medicalDevices.values())
   }
 
-  async getComputers(_criteria: DeviceCriteria): Promise<Computer[]> {
-    return Array.from(this.computers.values())
+  async getComputers(criteria: DeviceCriteria): Promise<Computer[]> {
+    let results = Array.from(this.computers.values());
+
+    // FILTER BY (including nested fields e.g., owner.id)
+    if (criteria?.filterBy) {
+      const { field, value } = criteria.filterBy;
+
+      results = results.filter((device) => {
+        const nestedValue = field
+          .split(".")
+          .reduce((obj, key) => (obj as any)?.[key], device as any);
+
+        return nestedValue === value;
+      });
+    }
+
+    // SORTING (supports ascending/descending)
+    if (criteria?.sortBy) {
+      const { field, isAscending } = criteria.sortBy;
+
+      results.sort((a, b) => {
+        const av = field.split(".").reduce((obj, key) => (obj as any)?.[key], a as any);
+        const bv = field.split(".").reduce((obj, key) => (obj as any)?.[key], b as any);
+
+        if (av instanceof Date && bv instanceof Date)
+          return isAscending ? av.getTime() - bv.getTime() : bv.getTime() - av.getTime();
+
+        return isAscending ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+      });
+    }
+
+    // ✅ PAGINATION
+    if (criteria?.offset !== undefined) results = results.slice(criteria.offset);
+    if (criteria?.limit !== undefined) results = results.slice(0, criteria.limit);
+
+    return results;
   }
+
 
   async getFrequentComputers(_criteria: DeviceCriteria): Promise<FrequentComputer[]> {
     return Array.from(this.frequentComputers.values())
@@ -38,7 +73,7 @@ export class InMemoryDeviceRepository implements DeviceRepository {
 
   async checkinMedicalDevice(device: MedicalDevice): Promise<MedicalDevice> {
     this.medicalDevices.set(device.id, device)
-    this.enteredDevices.set(device.id,this.mapDeviceFromMedical(device))
+    this.enteredDevices.set(device.id, this.mapDeviceFromMedical(device))
 
     return device
   }
@@ -59,25 +94,25 @@ export class InMemoryDeviceRepository implements DeviceRepository {
   }
 
   async checkoutDevice(id: DeviceId, datetime: Date): Promise<void> {
-      if (!this.enteredDevices.has(id)) {
-        throw SERVICE_ERRORS.DeviceNotFound
-      }
+    if (!this.enteredDevices.has(id)) {
+      throw SERVICE_ERRORS.DeviceNotFound
+    }
 
-      const device = this.enteredDevices.get(id)!
+    const device = this.enteredDevices.get(id)!
 
-      switch (device.type) {
-        case "computer":
-          this.computers.get(id)!.checkoutAt = datetime
-          break;
-        case "medical-device":
-          this.medicalDevices.get(id)!.checkoutAt = datetime
-          break;
-        case "frequent-computer":
-          this.frequentComputers.get(id)!.device.checkoutAt = datetime
-          break;
-      }
+    switch (device.type) {
+      case "computer":
+        this.computers.get(id)!.checkoutAt = datetime
+        break;
+      case "medical-device":
+        this.medicalDevices.get(id)!.checkoutAt = datetime
+        break;
+      case "frequent-computer":
+        this.frequentComputers.get(id)!.device.checkoutAt = datetime
+        break;
+    }
 
-      this.enteredDevices.delete(id)
+    this.enteredDevices.delete(id)
   }
 
   async isDeviceEntered(id: DeviceId): Promise<boolean> {
